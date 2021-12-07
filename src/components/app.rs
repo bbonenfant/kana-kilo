@@ -9,6 +9,7 @@ use super::{
     game::GameScreen,
     kana::KanaSelector,
     hide_state::HideState,
+    icons::github,
 };
 
 
@@ -87,6 +88,10 @@ impl Component for App {
         }
 
         return html! {
+            <>
+            <div class="github-link">
+                <a href="https://github.com/bbonenfant/kana-kilo">{ github() }</a>
+            </div>
             <div class="main-container" centered=(!self.game_hide_state.is_hidden()).to_string()>
                 <h2 class="title">{ "Kana Kilo" }</h2>
                 <div class="play-configurations">
@@ -100,6 +105,7 @@ impl Component for App {
                     hide_state=self.kana_hide_state.clone()
                     screen_type=Screen::KanaSelector/>
             </div>
+            </>
         }
     }
 }
