@@ -1,0 +1,6 @@
+/.idea
+/dist
+/pkg
+/target
+
+.DS_Store

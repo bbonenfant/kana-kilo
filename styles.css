@@ -1,0 +1,369 @@
+:root {
+    --color-activated: #533E4C;
+    --color-body: #F0EBE9;
+    --color-button: #9D695A;
+    --color-deactivated: #bbbbbb;
+    --color-game: #2c3e50;
+    --color-green: #26d971;
+    --color-input: #34495e;
+    --color-red: #e74c3c;
+    --color-text: white;
+
+    --english-font-family:
+            "Lato",
+            "Helvetica Neue",
+            Helvetica,Arial,
+            sans-serif;
+    --japanese-font-family:
+            "ヒラギノ角ゴ Pro W3",
+            "Hiragino Kaku Gothic Pro",
+            Osaka,
+            "メイリオ",
+            Meiryo,
+            "ＭＳ Ｐゴシック",
+            "MS PGothic",
+            sans-serif;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--color-body);
+    box-sizing: border-box;
+    font: 1rem var(--english-font-family);
+    text-align: center;
+    text-rendering: optimizeLegibility;
+}
+
+.main-container {
+    position: absolute;
+    top: 5%; right: 0; bottom: 0; left: 0;
+    padding-bottom: 10vh;
+    width: 100%;
+    will-change: transform;
+}
+
+.title {
+    margin: 2vh;
+    color: var(--color-game);
+    font-size: 60px;
+    font-weight: 255;
+}
+
+.play-configurations {
+    margin-inline: 5em;
+    transition: transform 1.0s ease-in-out;
+}
+
+    .main-container[centered=true] .play-configurations {
+        transform: translateX(calc(-50vw + 2.5em));
+    }
+
+.play-configurations button {
+    background: var(--color-button);
+    border: 1px solid transparent;
+    border-radius: 0.25em;
+    color: var(--color-text);
+    font-size: 1.15em;
+    margin: 0.25em;
+    padding: 0.5em;
+    text-align: center;
+}
+
+.kana-selection-container {
+    display: grid;
+    justify-content: center;
+    grid-auto-flow: row;
+}
+
+    .kana-selection-container button {
+        background: var(--color-deactivated);
+        border: 1px solid transparent;
+        border-radius: 0.25em;
+        color: var(--color-text);
+        font-size: 2.25vw;
+        margin: 0.125em;
+        padding: 0.1em 0.3em;
+        text-align: center;
+        transition: background-color 150ms ease-in-out;
+    }
+
+        .kana-selection-container button:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
+        .kana-selection-container button:hover {
+            cursor: pointer;
+        }
+
+        .kana-selection-container button[active] {
+            background: var(--color-activated);
+        }
+
+        .kana-selection-container button[void] {
+            color: transparent;
+            cursor: initial;
+            background: transparent;
+        }
+
+        .kana-selection-container button.checkbox {
+            background: transparent;
+            color: var(--color-deactivated);
+            padding: 0.2em;
+        }
+
+        .kana-selection-container button.checkbox[active] {
+            color: var(--color-activated);
+        }
+
+        .kana-selection-container button.checkbox svg {
+            aspect-ratio: 1;
+            width: 0.8em;
+        }
+
+        .kana-selection-container button.syllabary-title {
+            font-size: 38px;
+            margin: 20px 0;
+            padding: 0.25em 0;
+            width: 100%;
+        }
+
+        .kana-selection-container button.chart-title {
+            font-size: 25px;
+            margin: 20px 0;
+            padding: 0.35em 0 0.25em;
+            width: 100%;
+        }
+
+        .kana-syllabary {
+            margin: 0 5em;
+        }
+
+        .kana-chart-collection {
+            margin: 0 2em;
+
+            display: grid;
+            justify-content: center;
+            grid-auto-flow: column;
+            grid-gap: 20px;
+        }
+
+        .kana-row {
+            margin-right: .5em;
+
+            display: grid;
+            justify-content: center;
+            grid-auto-flow: column;
+        }
+
+        .kana-row button {
+            font-family: var(--japanese-font-family)
+        }
+
+/* ======================================== Game Screen ======================================== */
+
+.kana-line {
+    font: 60px var(--japanese-font-family);
+    background-color: var(--color-game);
+    color: var(--color-text);
+    height: 2em;
+    overflow: hidden;
+    text-align: left;
+    width: 100vw;
+}
+
+.kana-line-container {
+    margin-left: 50vw;
+}
+
+.kana-line-scroll-container {
+    padding-top: 10px;
+}
+
+    .kana-line-scroll-container > span {
+        display: inline-block;
+        position: relative;
+        top: 0.4em;
+    }
+
+    .kana-line-scroll-container > span.red {
+        color: var(--color-red);
+        position: relative;
+    }
+
+    .kana-line-scroll-container > span.green {
+        color: var(--color-green);
+    }
+
+    /* Turn all the white contents, except for the first, gray */
+    .kana-line-scroll-container > span.white ~ span.white {
+        color: var(--color-deactivated)
+    }
+
+
+    .kana-line-scroll-container > span > .small-above {
+        font-size: 0.4em;
+        position: absolute;
+        left: 0;
+        right: 0;
+        margin: -0.6em auto auto;
+        text-align: center;
+    }
+
+.romanji-line {
+    box-shadow: 0 0.5em 0.75em -0.8em black;
+    position: relative;
+    width: 100vw;
+    z-index: 2;
+}
+
+    .romanji-line > input {
+        background-color: var(--color-input);
+        border: none;
+        border-radius: 0;
+        color: var(--color-text);
+        font-size: 24px;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+        width: 100vw;
+        -webkit-appearance: none;
+    }
+
+        .romanji-line > input:focus {
+            outline: none;
+        }
+
+
+
+.metrics-container {
+    display: grid;
+    grid-auto-columns: minmax(0, max-content) fit-content(20%);
+    grid-auto-flow: column;
+    grid-gap: 0;
+    justify-content: center;
+}
+
+    .metrics-container > div {
+        color: var(--color-text);
+        background-color: var(--color-game);
+        font: 24px sans-serif;
+        height: 2em;
+        padding-top: 0.1em;
+        width: 8em;
+
+        display: grid;
+        grid-auto-columns: minmax(0, max-content);
+        grid-auto-flow: column;
+        align-content: center;
+        justify-content: center;
+    }
+
+    .metrics-container > div:first-of-type {
+        border-radius: 0 0 0 1ch;
+    }
+
+    .metrics-container > div:last-of-type {
+        border-radius: 0 0 1ch 0;
+    }
+
+    .metrics-container > div > svg {
+        aspect-ratio: 1;
+        height: 1em;
+        margin-top: -0.1em;
+    }
+
+    .metrics-container .clock {
+        grid-gap: 0.5em;
+    }
+
+    .metrics-container .score {
+        grid-gap: 0.2em;
+        grid-template-columns: min-content 4ch min-content 4ch;
+    }
+
+        .metrics-container .score .score-number:first-of-type {
+            text-align: right;
+        }
+        .metrics-container .score .score-number:last-of-type {
+            text-align: left;
+        }
+
+
+/* ======================================== Animations ======================================== */
+
+[centered=true] {
+    transform: translateY(calc(20vh - 5em));
+    transition: transform 1s ease-in-out;
+}
+
+[centered=false] {
+    transition: transform 1s ease-in-out;
+}
+
+[state=Hidden] {
+    animation: fade-out 1s ease-in 0s;
+}
+
+    @keyframes fade-out {
+        from {
+            opacity: 1;
+        }
+        to {
+            opacity: 0;
+        }
+    }
+
+[state=Visible] {
+    animation: fade-in 1s ease-in;
+}
+
+    @keyframes fade-in {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+/* =================================== Mobile Compatibility =================================== */
+
+@media only screen and (max-width: 768px) {
+
+    /* Resize the buttons to better fit on the smaller screen. */
+    .kana-selection-container button {
+        font-size: 6.25vw;
+    }
+
+    /* Resize the width of the full screen buttons to fit within the smaller screen. */
+    .kana-selection-container button.syllabary-title {
+        width: min(100%, calc(100vw - 20px));
+    }
+
+    /* Align the Kana charts into rows so the buttons can be scaled up. */
+    .kana-chart-collection {
+        grid-auto-flow: row;
+    }
+
+    .kana-line {
+        font-size: 10vw;
+    }
+
+    .metrics-container > div {
+        font-size: 4.5vw;
+    }
+}
+
+@media only screen and (max-height: 768px) {
+    .kana-line {
+        font-size: 10vh;
+    }
+
+    .metrics-container > div {
+        font-size: 1em;
+    }
+}
