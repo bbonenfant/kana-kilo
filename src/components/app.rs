@@ -4,7 +4,7 @@ use std::rc::Rc;
 use yew::prelude::*;
 use yew::utils::window;
 
-use crate::translations::create_translations;
+use crate::translations::get_translations;
 use super::{
     game::GameScreen,
     kana::KanaSelector,
@@ -84,7 +84,7 @@ impl Component for App {
         let mut translations = Vec::new();
         if self.is_play_mode() {
             button_content = "Back";
-            translations = create_translations(&self.symbols);
+            translations = get_translations(&self.symbols);
         }
 
         return html! {

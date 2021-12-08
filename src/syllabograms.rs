@@ -1,5 +1,9 @@
-use std::cmp;
-
+//! Iterator implementation for Japanese syllabograms
+//!
+//! This lifted and adapted from the unicode-segmentation crate:
+//!     https://github.com/unicode-rs/unicode-segmentation
+//!
+//! TODO: Implement the rest of this with proper error handling.
 const SMALL_KANA: &str = "ゃゅょャュョァィゥェォ";
 
 
@@ -32,7 +36,7 @@ impl<'a> Iterator for Syllabograms<'a> {
     #[inline]
     fn size_hint(&self) -> (usize, Option<usize>) {
         let slen = self.cursor_back.cur_cursor() - self.cursor.cur_cursor();
-        (cmp::min(slen, 1), Some(slen))
+        (std::cmp::min(slen, 1), Some(slen))
     }
 }
 

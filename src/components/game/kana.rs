@@ -1,19 +1,17 @@
-use std::rc::Rc;
-
 use yew::prelude::*;
 use yew::services::ConsoleService;
 use yew::virtual_dom::VNode;
 use yewtil::NeqAssign;
 
-use super::{GameMessage, GameScreen, Translation};
+use super::{GameMessage, GameScreen, KanaTranslationList};
 
 
-#[derive(Clone, Properties, Debug)]
+#[derive(Clone, Properties)]
 pub struct KanaLineProperties {
     pub hidden: bool,
     pub length: usize,
     pub text: String,
-    pub translations: Rc<Vec<Translation>>,
+    pub translations: KanaTranslationList,
 }
 
 impl NeqAssign<KanaLineProperties> for KanaLineProperties {
@@ -149,8 +147,9 @@ impl KanaLine {
             return 0f32
         }
 
-        let margin = self.contents[0..self.index]
+        let margin = self.contents
             .iter()
+            .take(self.index)
             .fold(0, |s, c| s + c.size)
             as f32;
         let current = self.contents.get(self.index)
@@ -165,7 +164,7 @@ impl KanaLine {
 
 #[derive(Default)]
 struct ContentGenerator {
-    translations: Rc<Vec<Translation>>,
+    translations: KanaTranslationList,
 }
 
 impl ContentGenerator {
@@ -173,12 +172,15 @@ impl ContentGenerator {
         if self.translations.is_empty() {
             return None
         }
-        let index = rand::random::<usize>() % self.translations.len();
-        let (kana, romanji) = self.translations[index].clone();
-        Some(Content::new(kana, romanji))
+        let translation = unsafe {
+            let index = rand::random::<usize>() % self.translations.len();
+            <&crate::KanaTranslation>::clone(self.translations.get_unchecked(index))
+        };
+
+        Some(Content::new(translation))
     }
 
-    fn set_translations(&mut self, translations: Rc<Vec<Translation>>) {
+    fn set_translations(&mut self, translations: KanaTranslationList) {
         self.translations = translations;
     }
 }
@@ -190,18 +192,16 @@ enum ContentState {
 }
 
 struct Content {
-    kana: String,
-    romanji: Vec<String>,
+    translation: &'static crate::KanaTranslation,
     size: usize,
     state: ContentState,
 }
 
 impl Content {
-    fn new(kana: String, romanji: Vec<String>) -> Self {
-        let size = kana.chars().count();
+    fn new(translation: &'static crate::KanaTranslation) -> Self {
+        let size = translation.kana.chars().count();
         Self {
-            kana,
-            romanji,
+            translation,
             size,
             state: ContentState::Unanswered,
         }
@@ -211,8 +211,13 @@ impl Content {
         if text.is_empty() {
             return
         }
-        if "あいうえおんアイウエオ".contains(&self.kana) || text.len() == self.romanji[0].len() {
-            let is_correct = self.romanji.contains(&text);
+        if "あいうえおんアイウエオ".contains(&self.translation.kana)
+            || text.len() == self.translation.romanji.len()
+        {
+            let mut is_correct = self.translation.romanji == text;
+            if let Some(alt_romanji) = self.translation.alt_romanji {
+                is_correct |= alt_romanji == text;
+            }
             self.state = ContentState::Answered(is_correct);
         }
     }
@@ -228,7 +233,9 @@ impl Content {
             } else {
                 class = "red";
                 small_above = html!{
-                    <span class="small-above">{ self.romanji[0].clone() }</span>
+                    <span class="small-above">
+                        { <&'static str>::clone(&self.translation.romanji) }
+                    </span>
                 };
             }
         }
@@ -236,7 +243,7 @@ impl Content {
         return html! {
             <span class=class style=style>
                 { small_above }
-                { self.kana.clone() }
+                { <&'static str>::clone(&self.translation.kana) }
             </span>
         }
     }

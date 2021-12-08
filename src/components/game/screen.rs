@@ -1,5 +1,3 @@
-use std::rc::Rc;
-
 use yew::prelude::*;
 use yew::web_sys::HtmlInputElement;
 use yewtil::NeqAssign;
@@ -11,9 +9,9 @@ use super::super::{
 use super::{
     Clock,
     KanaLine,
+    KanaTranslationList,
     RomanjiLine,
     Score,
-    Translation
 };
 
 
@@ -26,7 +24,7 @@ pub enum GameMessage {
 pub struct GameProperties {
     pub hide_state: HideState,
     #[prop_or_default]
-    pub translations: Rc<Vec<Translation>>,
+    pub translations: KanaTranslationList,
     pub screen_type: Screen,
 }
 

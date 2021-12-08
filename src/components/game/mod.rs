@@ -11,4 +11,5 @@ use score::Score;
 use screen::GameMessage;
 
 pub use screen::GameScreen;
-pub type Translation = (String, Vec<String>);
+
+pub type KanaTranslationList = std::rc::Rc<Vec<&'static crate::KanaTranslation>>;

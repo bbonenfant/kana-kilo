@@ -5,6 +5,7 @@ mod utils;
 
 pub use components::App;
 use syllabograms::Syllabograms;
+use translations::KanaTranslation;
 
 pub trait SyllabogramSegmentation {
     fn syllabograms(&self) -> Syllabograms;
