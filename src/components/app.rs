@@ -24,8 +24,8 @@ pub struct App {
     link: ComponentLink<Self>,
     game_hide_state: HideState,
     kana_hide_state: HideState,
-    symbols: Vec<String>
-
+    symbols: Vec<String>,
+    text_focus: bool,
 }
 
 impl Component for App {
@@ -37,7 +37,8 @@ impl Component for App {
             link,
             game_hide_state: HideState::new_hidden(),
             kana_hide_state: HideState::new_visible(),
-            symbols: Vec::new()
+            symbols: Vec::new(),
+            text_focus: false,
         }
     }
 
@@ -58,6 +59,11 @@ impl Component for App {
                     (Animation::FadeOut, Screen::Game) => {
                         self.game_hide_state.toggle_display_none();
                         self.kana_hide_state.toggle_display_none();
+                        self.text_focus = false;
+                        true
+                    },
+                    (Animation::FadeIn, Screen::Game) => {
+                        self.text_focus = true;
                         true
                     },
                     _ => false
@@ -100,7 +106,8 @@ impl Component for App {
                 <GameScreen
                     hide_state=self.game_hide_state.clone()
                     translations=Rc::new(translations)
-                    screen_type=Screen::Game/>
+                    screen_type=Screen::Game
+                    text_focus=self.text_focus/>
                 <KanaSelector
                     hide_state=self.kana_hide_state.clone()
                     screen_type=Screen::KanaSelector/>

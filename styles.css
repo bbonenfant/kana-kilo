@@ -192,11 +192,13 @@ body {
 
 .kana-line-scroll-container {
     padding-top: 10px;
+    will-change: transform;
 }
 
     .kana-line-scroll-container > span {
         display: inline-block;
         position: relative;
+        text-align: center;
         top: 0.4em;
     }
 
@@ -220,8 +222,7 @@ body {
         position: absolute;
         left: 0;
         right: 0;
-        margin: -0.6em auto auto;
-        text-align: center;
+        transform: translateY(-50%);
     }
 
 .romanji-line {

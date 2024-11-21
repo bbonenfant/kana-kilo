@@ -6,6 +6,10 @@ use yewtil::NeqAssign;
 use super::{GameMessage, GameScreen, KanaTranslationList};
 
 
+pub enum KanaLineMessage {
+    ResampleContent
+}
+
 #[derive(Clone, Properties)]
 pub struct KanaLineProperties {
     pub hidden: bool,
@@ -26,16 +30,17 @@ impl NeqAssign<KanaLineProperties> for KanaLineProperties {
 }
 
 pub struct KanaLine {
+    link: ComponentLink<Self>,
     props: KanaLineProperties,
     content_generator: ContentGenerator,
     contents: Vec<Content>,
     index: usize,
     onshift: Callback<bool>,
-    shifted: bool,
+    show_transition: bool,
 }
 
 impl Component for KanaLine {
-    type Message = ();
+    type Message = KanaLineMessage;
     type Properties = KanaLineProperties;
 
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
@@ -47,17 +52,20 @@ impl Component for KanaLine {
             parent.callback(GameMessage::KanaShift)
         };
         Self {
+            link,
             props,
             content_generator: ContentGenerator::default(),
             contents,
             index: 0,
             onshift,
-            shifted: false,
+            show_transition: true,
         }
     }
 
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
-        false
+    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+        match msg {
+            Self::Message::ResampleContent => self.resample()
+        }
     }
 
     fn change(&mut self, props: Self::Properties) -> ShouldRender {
@@ -86,16 +94,20 @@ impl Component for KanaLine {
 
     fn view(&self) -> Html {
         let mut styles = vec![
-            format!("margin-left: -{}em;", self.get_margin()),
+            format!("transform: translate3d(-{}em,0,0);", self.get_margin()),
             format!("width: {}em;", self.get_width()),
         ];
-        if self.shifted {
-            styles.push(String::from("transition: margin-left 200ms linear"))
+        if self.show_transition {
+            styles.push(String::from("transition: transform 250ms ease-in-out"))
         }
         return html!{
             <div class="kana-line">
                 <div class="kana-line-container" >
-                    <div class="kana-line-scroll-container" style=styles.join(" ")>
+                    <div
+                        class="kana-line-scroll-container"
+                        ontransitionend=self.link.callback(|_| Self::Message::ResampleContent)
+                        style=styles.join(" ")
+                    >
                         { for self.contents.iter().map(|c| c.render() )}
                     </div>
                 </div>
@@ -111,21 +123,16 @@ impl KanaLine {
             return false
         }
 
-        let current = self.contents.get_mut(self.index)
-            .expect("could not locate current content of KanaLine");
-        current.check(self.props.text.to_lowercase());
-        match current.state {
-            ContentState::Unanswered => {
-                self.shifted = false;
-                self.resample()
-            },
-            ContentState::Answered(is_correct) => {
+        if let Some(current) = self.contents.get_mut(self.index) {
+            current.check(self.props.text.to_lowercase());
+            if let ContentState::Answered(is_correct) = current.state {
                 self.onshift.emit(is_correct);
                 self.index += 1;
-                self.shifted = true;
-                true
-            },
+                self.show_transition = true;
+                return true
+            }
         }
+        false
     }
 
     fn resample(&mut self) -> ShouldRender {
@@ -137,6 +144,7 @@ impl KanaLine {
                 self.contents.push(new);
                 self.index -= 1;
             }
+            self.show_transition = false;
             return true
         }
         false
@@ -147,14 +155,15 @@ impl KanaLine {
             return 0f32
         }
 
-        let margin = self.contents
+        let mut margin = self.contents
             .iter()
             .take(self.index)
             .fold(0, |s, c| s + c.size)
             as f32;
-        let current = self.contents.get(self.index)
-            .expect("Could not get current content");
-        margin + (current.size as f32 / 2.0)
+        if let Some(current) = self.contents.get(self.index) {
+            margin += current.size as f32 / 2.0
+        }
+        return margin
     }
 
     fn get_width(&self) -> usize {
@@ -212,7 +221,8 @@ impl Content {
             return
         }
         if "あいうえおんアイウエオ".contains(&self.translation.kana)
-            || text.len() == self.translation.romanji.len()
+            || (text.len() == 1 && "aeiuo".contains(&text))
+            || text.len() >= self.translation.romanji.len()
         {
             let mut is_correct = self.translation.romanji == text;
             if let Some(alt_romanji) = self.translation.alt_romanji {

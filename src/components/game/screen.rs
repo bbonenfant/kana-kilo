@@ -23,9 +23,11 @@ pub enum GameMessage {
 #[derive(Clone, PartialEq, Properties)]
 pub struct GameProperties {
     pub hide_state: HideState,
+    pub screen_type: Screen,
+    #[prop_or_default]
+    pub text_focus: bool,
     #[prop_or_default]
     pub translations: KanaTranslationList,
-    pub screen_type: Screen,
 }
 
 pub struct GameScreen {
@@ -78,13 +80,14 @@ impl Component for GameScreen {
 
     fn change(&mut self, props: Self::Properties) -> ShouldRender {
         let should_render = self.props.neq_assign(props);
-        if !self.props.hide_state.is_hidden() {
+        if self.props.hide_state.is_hidden() {
+            self.active = false;
+            self.score.reset();
+        }
+        if self.props.text_focus {
             if let Some(input) = self.html_input_element() {
                 input.focus().ok();
             }
-        } else {
-            self.active = false;
-            self.score.reset();
         }
         should_render
     }
