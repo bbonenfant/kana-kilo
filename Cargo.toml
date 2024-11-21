@@ -16,7 +16,6 @@ palette = "0.6"
 phf = "0.10.0"
 rand = "0.8.4"
 strum = { version = "0.23", features = ["derive"] }
-wee_alloc = "0.4.5"
 yew = "0.18"
 yewtil = "0.4"
 
