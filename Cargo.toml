@@ -7,13 +7,12 @@ edition = "2021"
 
 [build-dependencies]
 csv = "1.1.6"
-phf_codegen = "0.10.0"
+phf_codegen = "0.11.2"
 
 [dependencies]
 lazy_static = "1.4.0"
 getrandom = { version = "0.2.3", features = ["js"] }
-palette = "0.6"
-phf = "0.10.0"
+phf = "0.11.2"
 rand = "0.8.4"
 strum = { version = "0.23", features = ["derive"] }
 yew = "0.18"
