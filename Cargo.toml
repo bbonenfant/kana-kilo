@@ -20,9 +20,6 @@ wee_alloc = "0.4.5"
 yew = "0.18"
 yewtil = "0.4"
 
-[lib]
-crate-type = ["cdylib", "rlib"]
-
 [profile.release]
 codegen-units = 1
 lto = true
