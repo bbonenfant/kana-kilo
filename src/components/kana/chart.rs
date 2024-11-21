@@ -149,7 +149,7 @@ impl KanaChart {
     }
 
     pub fn render(&self) -> Html {
-        return html! {
+        html! {
             <div class="kana-chart">
                 <button
                     active=some_if!(self.is_active(), "true")

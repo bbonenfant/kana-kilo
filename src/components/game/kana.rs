@@ -100,7 +100,7 @@ impl Component for KanaLine {
         if self.show_transition {
             styles.push(String::from("transition: transform 250ms ease-in-out"))
         }
-        return html!{
+        html!{
             <div class="kana-line">
                 <div class="kana-line-container" >
                     <div
@@ -163,7 +163,7 @@ impl KanaLine {
         if let Some(current) = self.contents.get(self.index) {
             margin += current.size as f32 / 2.0
         }
-        return margin
+        margin
     }
 
     fn get_width(&self) -> usize {
@@ -250,7 +250,7 @@ impl Content {
             }
         }
 
-        return html! {
+        html! {
             <span class=class style=style>
                 { small_above }
                 { <&'static str>::clone(&self.translation.kana) }

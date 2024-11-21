@@ -46,7 +46,7 @@ impl KanaButton {
         // Setting the content for a void button is a hack to ensure that the void
         //   buttons are the same size as the non-void buttons.
         let content: &str = if self.void { "ん" } else { &self.symbol };
-        return html! {
+        html! {
             <button
               active=some_if!(self.active, "true")
               onclick=self.callback.clone()

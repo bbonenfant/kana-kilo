@@ -21,7 +21,7 @@ impl Score {
 
     pub fn render(&self) -> Html {
         let style = format!("color: {};", self.color());
-        return html!{
+        html!{
             <div class="score" style=style>
                 { crate::components::icons::square_check_solid() }
                 <div class="score-number"> {self.correct} </div>

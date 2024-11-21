@@ -93,7 +93,7 @@ impl Component for GameScreen {
     }
 
     fn view(&self) -> Html {
-        return html! {
+        html! {
             <div
                 class="game-screen-container"
                 state=self.props.hide_state.as_string()

@@ -104,7 +104,7 @@ impl Component for KanaSelector {
     }
 
     fn view(&self) -> Html {
-        return html! {
+        html! {
             <div
                 class="kana-selection-container"
                 state=self.props.hide_state.as_string()

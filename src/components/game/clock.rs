@@ -56,7 +56,7 @@ impl Component for Clock {
             let seconds = self.seconds % 60;
             format!("{:02}:{:02}", minutes, seconds)
         };
-        return html!{
+        html!{
             <div class="clock">
                 { crate::components::icons::clock_solid() }
                 {time}

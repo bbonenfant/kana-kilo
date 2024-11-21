@@ -52,7 +52,7 @@ impl KanaSyllabary {
     }
 
     pub fn render(&self) -> Html {
-        return html! {
+        html! {
             <div class="kana-syllabary">
                 <button
                     active=some_if!(self.is_active(), "true")

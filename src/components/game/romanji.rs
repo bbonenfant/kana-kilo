@@ -37,7 +37,7 @@ impl Component for RomanjiLine {
     }
 
     fn view(&self) -> Html {
-        return html!{
+        html!{
             <div class="romanji-line">
                 <input
                     autocapitalize="off"

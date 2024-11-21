@@ -75,7 +75,7 @@ impl KanaRow {
             crate::components::icons::square_solid()
         };
 
-        return html! {
+        html! {
             <div class="kana-row">
                 <button
                     active=some_if!(is_active, "true")
